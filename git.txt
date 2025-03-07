@@ -1,0 +1,12 @@
+# （可選）確認遠端同步
+git pull origin main
+
+# 記錄時間到 daily_log.txt
+echo "$(Get-Date)" >> daily_log.txt
+
+# 添加並提交變更
+git add .
+git commit -m "每日自動更新 $(Get-Date)"
+
+# 推送至 GitHub
+git push origin main
