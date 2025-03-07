@@ -1,22 +1,32 @@
 name: Daily Commit
 on:
   schedule:
-    - cron: '0 4 * * *' # 每天 UTC 10:00（台灣時間 18:00）執行
+    - cron: '0 4 * * *' # 每天 UTC 04:00（台灣時間 12:00）執行
 
 jobs:
   commit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 確保 GitHub Actions 有寫入權限
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 確保可以拉取完整的 Git 紀錄
+
+      - name: Set Git identity
+        run: |
+          git config --global user.name "thumor0923"
+          git config --global user.email "thumorr@gmail.com"
 
       - name: Update daily log
         run: echo "$(date)" >> daily_log.txt
 
       - name: Commit and push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --thumor0923 "你的GitHub帳號"
-          git config --thumorr@gmail.com "你的GitHub信箱"
           git add .
-          git commit -m "每日自動更新 $(date)"
-          git push
+          git commit -m "每日自動更新 $(date)" || echo "No changes to commit"
+          git pull --rebase origin main  # 確保同步最新版本
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/thumor0923/MapWebsite.git main
