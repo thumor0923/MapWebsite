@@ -1,7 +1,7 @@
 name: Daily Commit
 on:
   schedule:
-    - cron: '0 10 * * *' # 每天 UTC 10:00（台灣時間 18:00）執行
+    - cron: '0 2 * * *' # 每天 UTC 10:00（台灣時間 18:00）執行
 
 jobs:
   commit:
