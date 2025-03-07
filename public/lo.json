@@ -1,0 +1,22 @@
+[
+    {"name": "店家 1", "latitude": 25.0415, "longitude": 121.54, "road": "忠孝東路", "isValid": true},
+    {"name": "店家 2", "latitude": 25.0420, "longitude": 121.541, "road": "忠孝東路", "isValid": true},
+    {"name": "店家 3", "latitude": 25.0425, "longitude": 121.542, "road": "忠孝東路", "isValid": true},
+    {"name": "店家 4", "latitude": 25.0430, "longitude": 121.543, "road": "忠孝東路", "isValid": true},
+    {"name": "店家 5", "latitude": 25.0435, "longitude": 121.544, "road": "忠孝東路", "isValid": true},
+    {"name": "店家 6", "latitude": 25.0440, "longitude": 121.545, "road": "忠孝東路", "isValid": true},
+    {"name": "店家 7", "latitude": 25.0445, "longitude": 121.546, "road": "忠孝東路", "isValid": true},
+    {"name": "店家 8", "latitude": 25.0450, "longitude": 121.547, "road": "忠孝東路", "isValid": true},
+    {"name": "店家 9", "latitude": 25.0455, "longitude": 121.548, "road": "忠孝東路", "isValid": true},
+    {"name": "店家 10", "latitude": 25.0460, "longitude": 121.549, "road": "忠孝東路", "isValid": true},
+    {"name": "店家 11", "latitude": 25.0465, "longitude": 121.55, "road": "中山北路", "isValid": false},
+    {"name": "店家 12", "latitude": 25.0470, "longitude": 121.551, "road": "中山北路", "isValid": false},
+    {"name": "店家 13", "latitude": 25.0475, "longitude": 121.552, "road": "中山北路", "isValid": false},
+    {"name": "店家 14", "latitude": 25.0480, "longitude": 121.553, "road": "中山北路", "isValid": false},
+    {"name": "店家 15", "latitude": 25.0485, "longitude": 121.554, "road": "中山北路", "isValid": false},
+    {"name": "店家 16", "latitude": 25.0490, "longitude": 121.555, "road": "中山北路", "isValid": false},
+    {"name": "店家 17", "latitude": 25.0495, "longitude": 121.556, "road": "中山北路", "isValid": false},
+    {"name": "店家 18", "latitude": 25.0500, "longitude": 121.557, "road": "中山北路", "isValid": false},
+    {"name": "店家 19", "latitude": 25.0505, "longitude": 121.558, "road": "中山北路", "isValid": false},
+    {"name": "店家 20", "latitude": 25.0510, "longitude": 121.559, "road": "中山北路", "isValid": false}
+]

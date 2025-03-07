@@ -11,16 +11,17 @@ using MongoDB.Bson.Serialization.Attributes;
 public class WelcomeController : ControllerBase
 {
     private readonly IMongoCollection<Bulletin> _bulletinsCollection;
-    private readonly IMongoCollection<Location> _locationsCollection; // 新增 locations 集合
+    private readonly IMongoCollection<Location> _locationsCollection;
 
     public WelcomeController()
     {
         try
         {
-            var client = new MongoClient("mongodb+srv://thumor:11111@cluster0.ztipc.mongodb.net/announcement_db?retryWrites=true&w=majority");
-            var database = client.GetDatabase("announcement_db");
+            // 更新為本地 MongoDB 連接字串
+            var client = new MongoClient("mongodb://localhost:27017");
+            var database = client.GetDatabase("announcement_db"); // 保持資料庫名稱一致
             _bulletinsCollection = database.GetCollection<Bulletin>("bulletins");
-            _locationsCollection = database.GetCollection<Location>("locations"); // 初始化 locations 集合
+            _locationsCollection = database.GetCollection<Location>("locations");
             database.RunCommandAsync((Command<BsonDocument>)"{ping:1}").Wait();
             Console.WriteLine("MongoDB 連線成功");
         }
@@ -96,7 +97,8 @@ public class WelcomeController : ControllerBase
                 name = doc["name"].AsString,
                 latitude = doc["latitude"].AsDouble,
                 longitude = doc["longitude"].AsDouble,
-                road = doc["road"].AsString
+                road = doc["road"].AsString,
+                isValid = doc["isValid"].AsBoolean
             }).ToList();
             return Ok(locations);
         }
@@ -140,4 +142,7 @@ public class Location
 
     [BsonElement("road")]
     public string Road { get; set; }
+
+    [BsonElement("isValid")]
+    public bool IsValid { get; set; }
 }
