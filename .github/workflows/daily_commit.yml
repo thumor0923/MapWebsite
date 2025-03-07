@@ -1,18 +1,18 @@
 name: Daily Commit
 on:
   schedule:
-    - cron: '0 4 * * *' # 每天 UTC 04:00（台灣時間 12:00）執行
+    - cron: "0 8 * * *" # 每天 UTC 04:00（台灣時間 12:00）執行
 
 jobs:
   commit:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # 確保 GitHub Actions 有寫入權限
+      contents: write # 確保 GitHub Actions 有寫入權限
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 確保可以拉取完整的 Git 紀錄
+          fetch-depth: 0 # 確保可以拉取完整的 Git 紀錄
 
       - name: Set Git identity
         run: |
