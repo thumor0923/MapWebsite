@@ -71,3 +71,4 @@ C:\Users\user\Desktop\helloo\WelcomeApi\bin\Debug\net8.0\MongoDB.Driver.dll
 C:\Users\user\Desktop\helloo\WelcomeApi\bin\Debug\net8.0\SharpCompress.dll
 C:\Users\user\Desktop\helloo\WelcomeApi\bin\Debug\net8.0\Snappier.dll
 C:\Users\user\Desktop\helloo\WelcomeApi\bin\Debug\net8.0\ZstdSharp.dll
+C:\Users\user\Desktop\helloo\WelcomeApi\obj\Debug\net8.0\WelcomeApi.sourcelink.json
