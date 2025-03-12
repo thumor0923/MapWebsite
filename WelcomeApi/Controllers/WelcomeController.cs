@@ -12,16 +12,17 @@ public class WelcomeController : ControllerBase
 {
     private readonly IMongoCollection<Bulletin> _bulletinsCollection;
     private readonly IMongoCollection<Location> _locationsCollection;
+    private readonly IMongoCollection<ParkingSpace> _parkLocationsCollection;
 
     public WelcomeController()
     {
         try
         {
-            // 更新為本地 MongoDB 連接字串
             var client = new MongoClient("mongodb://localhost:27017");
-            var database = client.GetDatabase("announcement_db"); // 保持資料庫名稱一致
+            var database = client.GetDatabase("announcement_db");
             _bulletinsCollection = database.GetCollection<Bulletin>("bulletins");
             _locationsCollection = database.GetCollection<Location>("locations");
+            _parkLocationsCollection = database.GetCollection<ParkingSpace>("parklocations");
             database.RunCommandAsync((Command<BsonDocument>)"{ping:1}").Wait();
             Console.WriteLine("MongoDB 連線成功");
         }
@@ -108,6 +109,38 @@ public class WelcomeController : ControllerBase
             return StatusCode(500, new { message = "讀取位置時發生錯誤", error = ex.ToString() });
         }
     }
+
+    [HttpGet("parkingspaces")]
+    public async Task<IActionResult> GetParkingSpaces()
+    {
+        try
+        {
+            var database = _parkLocationsCollection.Database;
+            var collectionNames = await database.ListCollectionNames().ToListAsync();
+            Console.WriteLine("可用集合: " + string.Join(", ", collectionNames));
+
+            var rawParkingSpaces = await _parkLocationsCollection.Find(_ => true).ToListAsync();
+            Console.WriteLine($"查詢到的停車格數量: {rawParkingSpaces.Count}");
+            foreach (var ps in rawParkingSpaces)
+            {
+                Console.WriteLine($"Parking ID: {ps.ParkingId}, Road: {ps.Road}, Coordinates: {ps.LocationPolygon.Coordinates[0].Length} points");
+            }
+
+            var parkingSpaces = rawParkingSpaces.Select(ps => new
+            {
+                parkingId = ps.ParkingId,
+                road = ps.Road,
+                coordinates = ps.LocationPolygon.Coordinates[0]
+            }).ToList();
+
+            return Ok(parkingSpaces);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"查詢停車格失敗: {ex.ToString()}");
+            return StatusCode(500, new { message = "讀取停車格時發生錯誤", error = ex.ToString() });
+        }
+    }
 }
 
 public class Bulletin
@@ -145,4 +178,29 @@ public class Location
 
     [BsonElement("isValid")]
     public bool IsValid { get; set; }
+}
+
+public class ParkingSpace
+{
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; }
+
+    [BsonElement("parking_id")]
+    public string ParkingId { get; set; }
+
+    [BsonElement("road")]
+    public string Road { get; set; }
+
+    [BsonElement("location")]
+    public LocationPolygon LocationPolygon { get; set; }
+}
+
+public class LocationPolygon
+{
+    [BsonElement("type")]
+    public string Type { get; set; }
+
+    [BsonElement("coordinates")]
+    public double[][][] Coordinates { get; set; }
 }

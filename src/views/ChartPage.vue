@@ -1,14 +1,6 @@
 <template>
   <div class="map-page">
     <h2>台北市道路標記示例</h2>
-    <div class="button-group">
-      <button :class="{ active: showValid }" @click="toggleValid">
-        {{ showValid ? '隱藏 Valid' : '顯示 Valid' }}
-      </button>
-      <button :class="{ active: showInvalid }" @click="toggleInvalid">
-        {{ showInvalid ? '隱藏 Invalid' : '顯示 Invalid' }}
-      </button>
-    </div>
     <div id="map" ref="mapContainer"></div>
     <button @click="$router.push('/')" class="back-btn">返回首頁</button>
   </div>
@@ -22,38 +14,40 @@ export default {
   data() {
     return {
       map: null,
-      locations: [], // 儲存所有地點資料
-      markers: [], // 儲存地圖上的標記
-      showValid: false, // 控制 Valid 按鈕狀態
-      showInvalid: false, // 控制 Invalid 按鈕狀態
+      parkingSpaces: [],
+      polygons: [],
     };
   },
   mounted() {
     this.loadLeaflet(() => {
+      console.log('Leaflet 載入完成，初始化地圖');
       this.initializeMap();
-      this.loadLocationsFromDB();
+      this.loadParkingSpacesFromDB();
     });
   },
   methods: {
     loadLeaflet(callback) {
       if (typeof L !== 'undefined') {
+        console.log('Leaflet 已存在，直接執行 callback');
         callback();
         return;
       }
       const script = document.createElement('script');
-      script.src = 'https://unpkg.com/leaflet/dist/leaflet.js';
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
       script.onload = () => {
-        console.log('Leaflet 已動態載入');
+        console.log('Leaflet JS 已動態載入');
         callback();
       };
       script.onerror = () => {
-        console.error('Leaflet CDN 載入失敗');
+        console.error('Leaflet JS 載入失敗');
       };
       document.head.appendChild(script);
 
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/leaflet/dist/leaflet.css';
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      link.onload = () => console.log('Leaflet CSS 已載入');
+      link.onerror = () => console.error('Leaflet CSS 載入失敗');
       document.head.appendChild(link);
     },
     initializeMap() {
@@ -61,61 +55,44 @@ export default {
         console.error('地圖容器未找到！');
         return;
       }
-      this.map = L.map(this.$refs.mapContainer).setView([25.0416, 121.5410], 15);
+      console.log('初始化地圖，容器存在');
+      this.map = L.map(this.$refs.mapContainer).setView([25.0814, 121.7006], 18);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap',
         maxZoom: 18,
       }).addTo(this.map);
+      console.log('地圖底圖已添加');
     },
-    async loadLocationsFromDB() {
+    async loadParkingSpacesFromDB() {
       try {
-        const response = await axios.get('http://localhost:5158/api/welcome/locations');
-        this.locations = response.data;
-        this.updateMarkers();
+        const response = await axios.get('http://localhost:5158/api/welcome/parkingspaces');
+        this.parkingSpaces = response.data;
+        console.log('載入的停車格資料:', this.parkingSpaces);
+        this.updatePolygons();
       } catch (error) {
-        console.error('從資料庫載入位置失敗:', error);
+        console.error('從資料庫載入停車格失敗:', error);
       }
     },
-    updateMarkers() {
-      // 移除現有標記
-      this.markers.forEach(marker => marker.remove());
-      this.markers = [];
+    updatePolygons() {
+      console.log('開始更新多邊形');
+      this.polygons.forEach(polygon => polygon.remove());
+      this.polygons = [];
 
-      // 根據按鈕狀態過濾並顯示標記
-      this.locations.forEach(location => {
-        const lat = location.latitude;
-        const lon = location.longitude;
-        const name = location.name;
-        const road = location.road;
-        const isValid = location.isValid;
+      this.parkingSpaces.forEach(parking => {
+        const latLngs = parking.coordinates.map(coord => [coord[1], coord[0]]);
+        console.log(`繪製 Parking ID: ${parking.parkingId}, 座標點數: ${latLngs.length}`);
 
-        if (this.showValid && !this.showInvalid && !isValid) return; // 只顯示 valid
-        if (this.showInvalid && !this.showValid && isValid) return; // 只顯示 invalid
-        if (!this.showValid && !this.showInvalid) {
-          // 兩個按鈕都關閉，顯示所有點
-        } else if (this.showValid && this.showInvalid) {
-          // 兩個按鈕都開啟，顯示所有點
-        }
+        const polygon = L.polygon(latLngs, {
+          color: 'blue',
+          fillColor: 'blue',
+          fillOpacity: 0.2,
+          weight: 2,
+        }).addTo(this.map);
 
-        const marker = L.circle([lat, lon], {
-          color: isValid ? 'blue' : 'red',
-          fillColor: isValid ? '#00f' : '#f03',
-          fillOpacity: 0.7,
-          radius: 50,
-        })
-          .addTo(this.map)
-          .bindPopup(`<b>${name}</b><br>${road}<br>${isValid ? 'Valid' : 'Invalid'}`);
-
-        this.markers.push(marker);
+        polygon.bindPopup(`<b>Parking ID: ${parking.parkingId}</b><br>Road: ${parking.road}`);
+        this.polygons.push(polygon);
       });
-    },
-    toggleValid() {
-      this.showValid = !this.showValid;
-      this.updateMarkers();
-    },
-    toggleInvalid() {
-      this.showInvalid = !this.showInvalid;
-      this.updateMarkers();
+      console.log('多邊形繪製完成，總數:', this.polygons.length);
     },
   },
 };
@@ -126,25 +103,6 @@ export default {
   margin-top: 50px;
   height: auto;
   overflow: visible;
-}
-.button-group {
-  margin-bottom: 20px;
-}
-.button-group button {
-  padding: 10px 20px;
-  margin-right: 10px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.button-group button.active {
-  background-color: #0056b3;
-}
-.button-group button:hover {
-  background-color: #0056b3;
 }
 #map {
   height: 600px;
