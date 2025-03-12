@@ -19,9 +19,6 @@ jobs:
           git config --global user.name "thumor0923"
           git config --global user.email "thumorr@gmail.com"
 
-      - name: Update daily log
-        run: echo "$(date)" >> daily_log.txt
-
       - name: Commit and push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
