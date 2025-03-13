@@ -115,21 +115,19 @@ public class WelcomeController : ControllerBase
     {
         try
         {
-            var database = _parkLocationsCollection.Database;
-            var collectionNames = await database.ListCollectionNames().ToListAsync();
-            Console.WriteLine("可用集合: " + string.Join(", ", collectionNames));
-
             var rawParkingSpaces = await _parkLocationsCollection.Find(_ => true).ToListAsync();
             Console.WriteLine($"查詢到的停車格數量: {rawParkingSpaces.Count}");
             foreach (var ps in rawParkingSpaces)
             {
-                Console.WriteLine($"Parking ID: {ps.ParkingId}, Road: {ps.Road}, Coordinates: {ps.LocationPolygon.Coordinates[0].Length} points");
+                Console.WriteLine($"Parking ID: {ps.ParkingId}, Road: {ps.Road}, ParkType: {ps.ParkType}, Valid: {ps.Valid}");
             }
 
             var parkingSpaces = rawParkingSpaces.Select(ps => new
             {
                 parkingId = ps.ParkingId,
                 road = ps.Road,
+                parkType = ps.ParkType, // 新增 parktype
+                valid = ps.Valid,       // 新增 valid
                 coordinates = ps.LocationPolygon.Coordinates[0]
             }).ToList();
 
@@ -191,6 +189,12 @@ public class ParkingSpace
 
     [BsonElement("road")]
     public string Road { get; set; }
+
+    [BsonElement("parktype")] // 新增 parktype
+    public string ParkType { get; set; }
+
+    [BsonElement("valid")] // 新增 valid
+    public bool Valid { get; set; }
 
     [BsonElement("location")]
     public LocationPolygon LocationPolygon { get; set; }

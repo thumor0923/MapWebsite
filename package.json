@@ -11,6 +11,7 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@mapbox/mapbox-gl-language": "^1.0.1",
     "axios": "^1.8.1",
     "chart.js": "^4.4.8",
     "papaparse": "^5.5.2",

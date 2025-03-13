@@ -1,6 +1,6 @@
 [
     {
-      "parking_id": "1", "road": "60", "location": {
+      "parking_id": "1", "road": "60","parktype": "normal","valid":true, "location": {
         "type": "Polygon", "coordinates": [[
           [121.7006359, 25.08137652],
           [121.7006175, 25.08138329],
@@ -11,7 +11,7 @@
       }
     },
     {
-      "parking_id": "2", "road": "60", "location": {
+      "parking_id": "2", "road": "60","parktype": "charging","valid":false, "location": {
         "type": "Polygon", "coordinates": [[
           [121.700635224224, 25.0813751769317],
           [121.700617514464, 25.0813832929779],
@@ -22,7 +22,7 @@
       }
     },
     {
-      "parking_id": "3", "road": "60", "location": {
+      "parking_id": "3", "road": "60","parktype": "disability","valid":true, "location": {
         "type": "Polygon", "coordinates": [[
           [121.700609842945, 25.0813294047653],
           [121.700593007185, 25.0813389395388],
@@ -33,7 +33,7 @@
       }
     },
     {
-      "parking_id": "4", "road": "60", "location": {
+      "parking_id": "4", "road": "60","parktype": "disability","valid":false, "location": {
         "type": "Polygon", "coordinates": [[
           [121.700580051466, 25.0812859115119],
           [121.700564215914, 25.0812967749824],
@@ -44,7 +44,7 @@
       }
     },
     {
-      "parking_id": "5", "road": "60", "location": {
+      "parking_id": "5", "road": "60","parktype": "normal","valid":true, "location": {
         "type": "Polygon", "coordinates": [[
           [121.700674774231, 25.0814779554014],
           [121.700655746066, 25.0814830247518],
