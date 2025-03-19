@@ -128,14 +128,15 @@ export default {
 
         // 綁定彈出視窗，顯示停車格資訊
         polygon.bindPopup(`
-          <b>Parking ID: ${parking.parkingId}</b><br>
-          Road: ${parking.road}<br>
-          Park Type: ${parking.parkType}
+          <b>停車格ID: ${parking.parkingId}</b><br>
+          道路名稱: ${parking.road}<br>
+          停車格類型: ${parking.parkType}<br>
+          車位狀況: ${parking.valid}
         `);
         this.polygons.push(polygon); // 將多邊形存入陣列
 
-        // 僅為 disable 和 charging 類型添加圖示標記
-        if (parking.parkType === 'disable' || parking.parkType === 'charging') {
+        // 僅為 disable 和 offload 類型添加圖示標記
+        if (parking.parkType === 'disable' || parking.parkType === 'offload') {
           // 計算多邊形中心點作為標記位置
           const centerLat = latLngs.reduce((sum, coord) => sum + coord[0], 0) / latLngs.length;
           const centerLng = latLngs.reduce((sum, coord) => sum + coord[1], 0) / latLngs.length;
@@ -144,8 +145,8 @@ export default {
           let iconUrl;
           if (parking.parkType === 'disable') {
             iconUrl = '/disable.png'; // 身障停車格圖示
-          } else if (parking.parkType === 'charging') {
-            iconUrl = '/charging.png'; // 充電停車格圖示
+          } else if (parking.parkType === 'offload') {
+            iconUrl = '/offload.png'; // 充電停車格圖示
           }
 
           // 創建自訂圖示，動態調整大小與錨點
@@ -211,8 +212,8 @@ export default {
             <span>身障停車格 (Disable)</span>
           </div>
           <div>
-            <img src="/charging.png" width="20" height="20" style="vertical-align:middle">
-            <span>充電停車格 (Charging)</span>
+            <img src="/offload.png" width="20" height="20" style="vertical-align:middle">
+            <span>卸貨停車格 (Offload)</span>
           </div>
           <div>
             <span style="display:inline-block;width:20px;height:20px;background:blue;opacity:0.2;vertical-align:middle"></span>
